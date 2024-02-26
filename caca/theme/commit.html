@@ -1,0 +1,101 @@
+{% extends "repo.html" %}
+
+{% block title %}
+{{ commit.message.title }} - {{ commit.id[:10] }} - {{ repo.name }}
+{% endblock title %}
+
+{% block main %}
+<section>
+  <h2>{{ commit.message.title }}</h2>
+  {% if commit.message.body %}
+  <pre class="wrap text">{{ commit.message.body|safe }}</pre>
+  {% endif %}
+</section>
+
+<section>
+  <dl>
+    <dt>Id</dt>
+    <dd>{{ commit.id }}</dd>
+    <dt>Author</dt>
+    {% if commit.author.email_is_url %}
+    <dd><a href="{{ commit.author.email }}">{{ commit.author.name }}</a></dd>
+    {% else %}
+    <dd>{{ commit.author.name }}</dd>
+    {% endif %}
+    <dt>Commit time</dt>
+    <dd>{{ commit.author.time }}</dd>
+  </dl>
+</section>
+
+<section>
+  {% for event in events %}
+  <details class="mb1" open>
+    <summary>
+      {% if event.kind == "Renamed" %}
+      <h4 class="inline">Renamed {{ event.old_path }} to {{ event.path }}</h4>
+      {% else %}
+      <h4 class="inline">{{ event.kind }} {{ event.path }}</h4>
+      {% endif %}
+      {%- if event.diff.kind == "Unified" -%}
+      <nav class="inline">
+        <small>
+          {% if event.previous_url %}
+          <a href="{{ event.previous_url }}" title="view previous version of the file">old</a>
+          {% endif %}
+          {% if event.current_url %}
+          <a href="{{ event.current_url }}" title="view current version of the file">new</a>
+          {% endif %}
+        </small>
+      </nav>
+      {%- endif -%}
+    </summary>
+
+    {%- if event.diff.kind == "Unified" -%}
+    <section>
+      {% for chunk in event.diff.value %}
+      <article class="code chunk">
+        <span class="pre">@@ -{{ chunk.before_start }},{{ chunk.before_len }} +{{ chunk.after_start }},{{
+          chunk.after_len }}</span>
+        <br />
+        {%- for line in chunk.lines -%}
+        <span class="pre {{ line.kind |lower }}">{{ line.sign }}{{ line.value }}</span>
+        <br />
+        {%- endfor -%}
+      </article>
+      {% endfor %}
+    </section>
+
+    {%- elif event.diff.kind == "NoChange" -%}
+    <pre>No visible change</pre>
+
+    {%- elif event.diff.kind == "TooLarge" -%}
+    <pre>File too large</pre>
+
+    {%- elif event.diff.kind == "Binary" -%}
+    <pre>Binary data</pre>
+
+    {%- elif event.diff.kind == "Image" -%}
+    <div>
+      {% if event.previous_url %}
+      <figure>
+        {% if event.current_url %}
+        <figcaption>old</figcaption>
+        {% endif %}
+        <img src="{{ event.previous_url }}" alt="previous version">
+      </figure>
+      {% endif %}
+      {% if event.current_url %}
+      <figure>
+        {% if event.previous_url %}
+        <figcaption>new</figcaption>
+        {% endif %}
+        <img src="{{ event.current_url }}" alt="current version">
+      </figure>
+      {% endif %}
+    </div>
+    {%- endif -%}
+  </details>
+  {% endfor %}
+</section>
+
+{% endblock main %}

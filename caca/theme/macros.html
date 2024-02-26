@@ -1,0 +1,93 @@
+{%- macro tip_details(tip, path="") -%}
+<article id="tip" title="most recent commit{%if path %} for {{ path }}{% endif %}">
+  <details>
+    <summary>
+      <a href="{{ tip.url }}" title="View details for commit {{ tip.id }}">{{
+        tip.message.title}}</a>
+      {% if tip.message.body %}💬{% endif %}
+      <small>
+        by {{ tip.author_name }}
+        {{ tip.author_time_relative }}
+        (<a href="{{ tip.log_url }}" title="View log{%if path %} for {{ path }}{% endif %}">log</a>)
+      </small>
+    </summary>
+    {% if tip.message.body %}
+    <pre class="text wrap">{{- tip.message.body -}}</pre>
+    {% endif %}
+  </details>
+</article>
+{%- endmacro -%}
+
+{%- macro repo_listing(r) -%}
+<article>
+  <p id="name"><b><a href="{{ r.name }}/">{{ r.name }}</a></b>
+    {% if r.description %}
+    <span class="description"><em>{{ r.description}}</em></span>
+    {% endif %}
+    <span class="idle">
+      <small>updated: <time datetime="{{ r.idle }}">{{ r.idle_relative }}</time></small>
+    </span>
+  </p>
+</article>
+{%- endmacro -%}
+
+{%- macro feed_entry(e) -%}
+<entry>
+
+  {% if e.kind == "Tag" %}
+
+  {% if e.repo %}
+  <title>{{ e.repo }}: Tag "{{ e.tag_name }}" created</title>
+  {% else %}
+  <title>Tag "{{ e.tag_name }}" created</title>
+  {% endif %}
+  <link href="{{baseurl | safe }}{{ e.browse_url | safe }}" />
+  <id>{{baseurl | safe }}{{ e.browse_url | safe }}</id>
+
+  {% if e.tagger %}
+  <published>{{ e.tagger.time }}</published>
+  <updated>{{ e.tagger.time }}</updated>
+  {% else %}
+  <published>{{ e.commit.author.time }}</published>
+  <updated>{{ e.commit.author.time }}</updated>
+  {% endif %}
+  {% if e.annotation %}
+  <summary>{{ e.annotation }}</summary>
+  {% else %}
+  <summary>Commit {{ e.commit.id }}: {{ e.commit.title }}</summary>
+  {% endif %}
+  <author>
+    {% if e.tagger %}
+    <name>{{ e.tagger.name }}</name>
+    {% else %}
+    <name>{{ e.commit.author.name }}</name>
+    {% endif %}
+  </author>
+
+  {% elif e.kind == "Branch" %}
+
+  {% if e.repo %}
+  <title>{{ e.repo }}: {{ e.commit.title }}
+    {%- if not e.is_default_branch %} (branch {{ e.branch_name }}){%- endif -%}
+  </title>
+  {% else %}
+  <title>{{ e.commit.title }}
+    {%- if not e.is_default_branch %} (branch {{ e.branch_name }}){%- endif -%}
+  </title>
+  {% endif %}
+  <link href="{{baseurl | safe }}{{ e.commit.url | safe }}" />
+  <id>{{ baseurl | safe }}{{ e.commit.url | safe }}</id>
+  <published>{{ e.commit.author.time }}</published>
+  <updated>{{ e.commit.author.time }}</updated>
+  <summary>{{ e.commit.body }}
+
+    {{- baseurl | safe }}{{ e.browse_url }}
+  </summary>
+  <author>
+    <name>{{ e.commit.author.name }}</name>
+  </author>
+
+  {% endif %} {# e.kind #}
+
+</entry>
+{%- endmacro -%}

@@ -1,0 +1,39 @@
+{% from "macros.html" import tip_details %}
+
+{% extends "repo.html" %}
+
+{% block title %}
+Files{% if path %} at {{ path }}{% endif %} - {{ repo.name }}
+{% endblock title %}
+
+{% block main %}
+<br />
+{{ tip_details(tip, path) }}
+
+{% if path %}
+<h4>Tree {{path}}</h4>
+{% else %}
+<h4>Tree</h4>
+{% endif %}
+<section class="listing">
+  {%- for entry in entries -%}
+  {%- if entry.kind == "Dir" -%}
+  <article>📁 <a href="{{ entry.url }}">{{ entry.name }}/</a></article>
+  {% else %}
+  <article>📄 <a href="{{ entry.url }}">{{ entry.name }}</a></article>
+  {%- endif -%}
+  {%- endfor -%}
+</section>
+
+{% if readme %}
+<hr />
+<div id="readme">
+  {% if readme.mime == "text/plain" %}
+  <pre class="code">{{ readme.content }}</pre>
+  {% else %}
+  {{ readme.content | safe }}
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock main %}

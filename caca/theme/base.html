@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}caio's code asylum{% endblock title %}</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍄</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="caca - https://caio.co/de/caca">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    /* derived from https://ultimatemotherfuckingwebsite.com/ bugs and ugly are mine */
+    body {
+      font: 1.2rem/1.5 sans-serif;
+      max-width: 88ch;
+      padding: 2.5rem 1.75rem;
+      word-wrap: break-word;
+      tab-size: 4;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      line-height: 1.2;
+      font-family: sans-serif;
+    }
+
+    h1 {
+      font-size: 2.45rem;
+    }
+
+    a:focus {
+      outline: 0.2rem solid;
+      outline-offset: 0.4rem;
+    }
+
+    p {
+      margin-bottom: 2rem;
+    }
+
+    section,
+    aside,
+    footer {
+      margin: 2.5rem auto;
+    }
+
+    ul,
+    ol {
+      margin-top: 0;
+      margin-bottom: 2.25rem;
+    }
+
+    summary {
+      list-style-type: none;
+    }
+
+    /* loudsigh */
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .idle {
+      margin-left: 0.4rem;
+      display: block;
+    }
+
+    .listing {
+      column-count: 3;
+      column-width: 26ch;
+    }
+
+    .listing>article {
+      margin-left: 1rem;
+      overflow: hidden;
+    }
+
+    nav>ol {
+      list-style-type: none;
+      padding-left: 0;
+      display: inline;
+    }
+
+    nav>ol>li {
+      display: inline;
+    }
+
+    nav>li>a {
+      display: block;
+    }
+
+    nav>ol>li>a::after {
+      content: '/';
+    }
+
+    a.nodec,
+    a.nodec:visited {
+      text-decoration: none;
+      color: #000;
+    }
+
+    .chunk {
+      margin-bottom: 1rem;
+      /* how can i stop fighting with this shit */
+      line-height: 1.4;
+    }
+
+    .unified {
+      border-spacing: 0;
+      border-collapse: separate;
+      box-sizing: border-box;
+      font: 1.2rem/1.275 monospace;
+      vertical-align: top;
+
+      td {
+        padding: 0;
+      }
+    }
+
+    .mb1 {
+      margin-bottom: 1rem;
+    }
+
+
+    .wrap {
+      white-space: pre-wrap;
+    }
+
+    .text {
+      font-family: sans-serif;
+    }
+
+    .code {
+      font-family: monospace;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .pre {
+      white-space: pre;
+    }
+
+    .inline {
+      display: inline;
+    }
+
+    .minus {
+      background-color: #E7CCCF;
+    }
+
+    .plus {
+      background-color: #D8E7CE;
+    }
+
+    blockquote {
+      border-left: 2px lightgray solid;
+      padding-left: 0.5rem;
+    }
+
+    article#tip {
+      border-left: 2px lightgray solid;
+
+      details {
+        padding-left: 0.5rem;
+      }
+    }
+
+    @media(max-width: 86ch) {
+      #readme {
+        pre {
+          overflow: auto;
+        }
+      }
+    }
+
+    .line-numbers {
+      display: block;
+      text-align: right;
+      font-family: monospace;
+      max-width: 4rem;
+      margin-right: 0.5rem;
+      border-right: 2px lightgray solid;
+      padding-right: 0.5rem;
+    }
+
+    .blob-content>pre {
+      font-family: monospace;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    {% block header %}
+    {% endblock header %}
+  </header>
+  <main>
+    {% block main %}
+    {% endblock main %}
+  </main>
+</body>
+
+
+</html>

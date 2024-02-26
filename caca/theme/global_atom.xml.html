@@ -1,0 +1,13 @@
+{%- from "macros.html" import feed_entry -%}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ baseurl }} activity feed</title>
+  <updated>{{ updated }}</updated>
+  <link href="{{ baseurl|safe }}/" />
+  <id>{{ baseurl|safe }}</id>
+
+  {% for e in entries %}
+  {{ feed_entry(e) }}
+  {% endfor %}
+
+</feed>

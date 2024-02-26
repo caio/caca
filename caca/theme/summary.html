@@ -1,0 +1,81 @@
+{% extends "repo.html" %}
+
+{% block title %}
+{{ repo.name }}{% if repo.description %}: {{repo.description}}{% endif %}
+{% endblock title %}
+
+{% block main %}
+<nav>
+  <ul>
+    <li><a href="{{ pages.files }}">Files</a></li>
+    <li><a href="{{ pages.history }}">Log</a></li>
+    <li><a href="{{ pages.refs }}">Refs</a></li>
+    {% for link in pages.links %}
+    <li><a href="{{ link.href }}" {% if link.title %}{{ link.title }}{% endif %}>{{ link.name }}</a></li>
+    {% endfor %}
+  </ul>
+  <pre class="wrap code">git clone {{ repo.clone_url }}</pre>
+</nav>
+
+<h2>Activity</h2>
+
+{# FIXME the lazyness using nbsp and whitespace trimming has become counterproductive #}
+<ul>
+  {% for a in activity %}
+  {% if a.kind == "Branch" %}
+  <li>
+    <details>
+      <summary>
+        <a href="{{ a.commit.url }}" title="View details for commit {{ a.commit.id }}">{{ a.commit.title}}</a>
+        {% if a.commit.body %}💬{% endif %}
+        <small>
+          by {%- if a.commit.author.email_is_url -%}
+          &nbsp;<a class="nodec" href="{{ a.commit.author.email }}">{{ a.commit.author.name }}</a>&nbsp;
+          {%- else -%}
+          &nbsp;{{ a.commit.author.name }}&nbsp;
+          {%- endif -%}
+          {%- if not a.is_default_branch -%}
+          on branch <a href="{{ a.browse_url }}">{{ a.branch_name }}</a>&nbsp;
+          {%- endif -%}
+          {{ a.commit.author.time_relative }}
+        </small>
+      </summary>
+      {% if a.commit.body %}
+      <pre class="wrap text">{{- a.commit.body -}}</pre>
+      {% endif %}
+    </details>
+  </li>
+  {% elif a.kind == "Tag" %}
+  <li>
+    Tag <a href={{ a.browse_url }} title="Browse files on tag {{ a.tag_name }}">{{ a.tag_name }}</a> created
+    <small>
+      by {%- if a.tagger and a.tagger.email_is_url -%}
+      &nbsp;<a class="nodec" href="{{ a.tagger.email }}">{{ a.tagger.name }}</a>&nbsp;
+      {%- elif a.tagger -%}
+      &nbsp;{{ a.tagger.name }}&nbsp;
+      {%- elif a.commit.author.email_is_url -%}
+      &nbsp;<a class="nodec" href="{{ a.commit.author.email }}">{{ a.commit.author.name }}</a>&nbsp;
+      {%- else -%}
+      &nbsp;{{ a.commit.author.name }}&nbsp;
+      {%- endif -%}
+      on commit <a href="{{ a.commit.url }}" title="{{ a.commit.title }}">{{ a.commit.id[:10] }}</a>
+      {%- if a.tagger -%}&nbsp;{{ a.tagger.time_relative }}{%- else -%}&nbsp;{{ a.commit.author.time_relative }}
+      {%- endif -%}
+    </small>
+  </li>
+  {% endif %}
+  {% endfor %}
+</ul>
+
+{% if readme %}
+<hr />
+<div id="readme">
+  {% if readme.mime == "text/plain" %}
+  <pre>{{ readme.content }}</pre>
+  {% else %}
+  {{ readme.content | safe }}
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock main %}

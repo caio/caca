@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+members = [
+    "caca",
+    "urso",
+]
+default-members = ["caca"]
+
+[workspace.dependencies]
+tracing = { version = "0.1.40", default-features = false }

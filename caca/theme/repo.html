@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ repo.name }}{% if repo.description %} - {{ repo.description }}{% endif %} {% endblock title %}
+
+{% block header %}
+<h3><a class="nodec" href="{{ repo.url }}">{{ repo.name }}</a></h3>
+{% if nav %}
+<nav>
+  <ol>
+
+    {# head node: not a href when tail is empty
+    i.e.: when browsing the root of the repo,
+    the context is not clickable #}
+
+    {% if nav.head.kind == "Commit" %}
+
+    {% if nav.tail %}
+    <li><a href="{{ nav.head_url }}">commit/{{ nav.head.value[:10] }}</a></li>
+    {% else %}
+    <li>commit/{{ nav.head.value[:10] }}</li>
+    {% endif %}
+
+    {% elif nav.head.kind == "Tag" %}
+
+    {% if nav.tail %}
+    <li><a href="{{ nav.head_url }}">tag/{{ nav.head.value }}</a></li>
+    {% else %}
+    <li>tag/{{ nav.head.value }}</li>
+    {% endif %}
+
+    {% else %} {# if head.kind = Branch #}
+
+    {% if nav.tail %}
+    <li><a href="{{ nav.head_url }}">branch/{{ nav.head.value }}</a></li>
+    {% else %}
+    <li>branch/{{ nav.head.value }}</li>
+    {% endif %}
+
+    {% endif %}
+
+    {% for comp in nav.components %}
+    <li><a href="{{ comp.url }}">{{ comp.value }}</a></li>
+    {% endfor %}
+
+    {% if nav.tail %}
+    <li>{{ nav.tail }}</li>
+    {% endif %}
+  </ol>
+</nav>
+{% endif %}
+{% endblock header %}
+
+{% block main %}
+{% endblock main %}

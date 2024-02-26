@@ -1,0 +1,47 @@
+{% from "macros.html" import tip_details %}
+
+{% extends "repo.html" %}
+
+{% block title %}
+{{ path }} - {{ repo.name }}
+{% endblock title %}
+
+{% block main %}
+<br />
+{{ tip_details(tip, path) }}
+
+<h4>Blob {{path}}</h4>
+{% if kind == "Rendered" %}
+<p>
+  Showing rendered content. <a href="{{ raw_url }}" title="Download source code for {{ path }}">Download source code</a>
+</p>
+<hr />
+<div id="readme">
+  {{ content | safe }}
+</div>
+{% elif kind == "Image" %}
+<img src="{{ raw_url }}">
+{% elif kind == "Other" %}
+<p>Unable to display. <a href="{{ raw_url }}" title="Download {{ path }}">Download</a></p>
+{% elif kind == "TooLarge" %}
+<p>File too large. <a href="{{ raw_url }}" title="Download {{ path }}">Download</a></p>
+{% elif num_lines > 0 %}
+<table>
+  <tbody>
+    <tr>
+      <td class="line-numbers">
+        {% for num in range(1, num_lines + 1) %}
+        <a id="L{{num}}" href="#L{{ num }}">{{ num }}</a><br />
+        {% endfor %}
+      </td>
+      <td class="blob-content">
+        <pre>{{- content -}}</pre>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% else %}
+<pre>no content</pre>
+{% endif %}
+
+{% endblock main %}

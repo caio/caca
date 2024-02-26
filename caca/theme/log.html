@@ -1,0 +1,43 @@
+{% extends "repo.html" %}
+
+{% block title %}
+Log{% if path %} for {{ path }}{% endif %} - {{ repo.name }}
+{% endblock title %}
+
+{% block main %}
+{% if path %}
+<h4>Log for {{path}}</h4>
+{% else %}
+<h4>Log</h4>
+{% endif %}
+<ul>
+  {% for e in entries %}
+  <li>
+    <details>
+      <summary>
+        <a href="{{ e.url }}" title="View details for commit {{ e.id }}">{{ e.title}}</a>
+        {% if e.body %}💬{% endif %}
+        <small>
+          by {%- if e.author.email_is_url -%}
+          &nbsp;<a class="nodec" href="{{ e.author.email }}">{{ e.author.name }}</a>&nbsp;
+          {%- else -%}
+          &nbsp;{{ e.author.name }}&nbsp;
+          {%- endif -%}
+          {{ e.author.time_relative }}
+        </small>
+      </summary>
+      {% if e.body %}
+      <pre class="wrap text">{{- e.body -}}</pre>
+      {% endif %}
+    </details>
+  </li>
+  {% endfor %}
+</ul>
+{% if next_url %}
+<nav>
+  <center><a href="{{next_url}}">Older commits</a></center>
+  <br />
+</nav>
+{% endif %}
+
+{% endblock main %}

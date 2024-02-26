@@ -1,0 +1,32 @@
+{% from "macros.html" import repo_listing %}
+
+{% extends "base.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock title %}
+
+{% block header %}
+{{ header_html | safe }}
+{% endblock header %}
+
+{% block main %}
+<section>
+  <h2 id="repositories">repositories</h2>
+
+  {% for r in repos if r.state == "Pinned" %}
+  {{ repo_listing(r) }}
+  {% endfor %}
+  {% for r in repos if r.state == "Default" %}
+  {{ repo_listing(r) }}
+  {% endfor %}
+  {% if num_archived > 0 %}
+  <details>
+    <summary>archive ({{ num_archived }})</summary>
+    {% for r in repos if r.state == "Archived" %}
+    {{ repo_listing(r) }}
+    {% endfor %}
+  </details>
+  {% endif %}
+</section>
+{% endblock main %}

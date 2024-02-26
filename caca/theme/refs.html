@@ -1,0 +1,37 @@
+{% extends "repo.html" %}
+
+{% block main %}
+<section id="branches">
+  <h3>branches</h3>
+  {% for r in branches %}
+  <article>
+    <h4 id="branch-{{r.name}}"><a class="nodec" href="#branch-{{r.name}}">{{ r.name }}</a></h4>
+    <ul>
+      <li><a href="{{ r.browse_url }}">files</a></li>
+      <li><a href="{{ r.log_url }}">log</a></li>
+    </ul>
+  </article>
+  {% endfor %}
+</section>
+
+{% if tags %}
+<section id="tags">
+  <h3>tags</h3>
+  {% for r in tags %}
+  <article>
+    <h4 id="tag-{{r.name}}"><a class="nodec" href="#tag-{{r.name}}">{{ r.name }}</a></h4>
+    {% if r.annotation %}
+    <blockquote class="text wrap">
+      {{- r.annotation -}}
+    </blockquote>
+    {% endif %}
+    <ul>
+      <li><a href="{{ r.browse_url }}">files</a></li>
+      <li><a href="{{ r.log_url }}">log</a></li>
+    </ul>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% endblock main %}
