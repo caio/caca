@@ -6,6 +6,10 @@
 {{ title }}
 {% endblock title %}
 
+{% block head %}
+<link rel="alternate" type="application/atom+xml" title="{{ title }} feed" href="atom.xml" />
+{% endblock head %}
+
 {% block header %}
 {{ header_html | safe }}
 {% endblock header %}
