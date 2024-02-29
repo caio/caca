@@ -184,7 +184,7 @@ impl Urso {
         dir: PathBuf,
         max_bytes: u64,
         similarity_threshold: Option<f32>,
-        object_cache_size: impl Into<Option<usize>>,
+        object_cache_size: usize,
     ) -> Result<Self> {
         let mut repo = gix::ThreadSafeRepository::open(dir)?.to_thread_local();
         repo.object_cache_size(object_cache_size);

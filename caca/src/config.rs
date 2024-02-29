@@ -13,7 +13,7 @@ use std::path::PathBuf;
 pub(crate) struct GlobalConfig {
     pub site: Site,
     pub max_file_size_bytes: u64,
-    pub repo_object_cache_size: Option<usize>,
+    pub repo_object_cache_size: usize,
     pub rename_similarity_threshold: Option<f32>,
     pub metadata_config: Option<MetadataConfig>,
     // TODO merge mailmap_config / global_mailmap
