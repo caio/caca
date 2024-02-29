@@ -124,13 +124,27 @@ impl Default for MetadataConfig {
 }
 
 #[derive(Debug, Clone)]
-#[allow(dead_code)]
 pub(crate) enum ListenMode {
     External,
     Bind(BindOptions),
 }
 
-#[allow(dead_code)]
+impl ListenMode {
+    // listen = "external"
+    // listen = "addr"
+    // listen = "addr,admin_addr"
+    fn from_bytes(data: &[u8]) -> crate::Result<Self> {
+        let text = std::str::from_utf8(data)?.trim();
+        if text == "external" {
+            Ok(Self::External)
+        } else if let Some((addr, admin_addr)) = text.split_once(',') {
+            Ok(Self::with_admin(addr.trim(), admin_addr.trim())?)
+        } else {
+            Ok(Self::addr(text)?)
+        }
+    }
+}
+
 impl ListenMode {
     pub fn external() -> Self {
         Self::External
