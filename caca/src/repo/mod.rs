@@ -163,13 +163,12 @@ impl RepoState {
         }
 
         let (mailmap_version, mailmap) = urso
-            .rev_parse(&config.mailmap_config.spec)
+            .rev_parse("HEAD")
             .and_then(|id| {
-                urso.get_file_contents(id, &config.mailmap_config.filename, &mut buf)
-                    .map(|_| {
-                        tracing::debug!(repo=?urso.git_dir(), object=?id, "mailmap found");
-                        (Some(id), Mailmap::from_bytes(&buf))
-                    })
+                urso.get_file_contents(id, ".mailmap", &mut buf).map(|_| {
+                    tracing::debug!(repo=?urso.git_dir(), object=?id, "mailmap found");
+                    (Some(id), Mailmap::from_bytes(&buf))
+                })
             })
             .unwrap_or((None, Mailmap::default()));
 

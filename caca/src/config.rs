@@ -17,7 +17,6 @@ pub(crate) struct GlobalConfig {
     pub rename_similarity_threshold: Option<f32>,
     pub metadata_config: Option<MetadataConfig>,
     // TODO merge mailmap_config / global_mailmap
-    pub mailmap_config: MailmapConfig,
     pub global_mailmap: Option<PathBuf>,
     pub feed_size: Option<NonZeroUsize>,
     pub log_size: NonZeroUsize,
@@ -120,21 +119,6 @@ impl Default for MetadataConfig {
             spec: "HEAD".to_string(),
             // gitconfig is not quite .ini eh
             filename: PathBuf::from(".config/caca.ini"),
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub(crate) struct MailmapConfig {
-    pub spec: String,
-    pub filename: PathBuf,
-}
-
-impl Default for MailmapConfig {
-    fn default() -> Self {
-        Self {
-            spec: "HEAD".to_string(),
-            filename: PathBuf::from(".mailmap"),
         }
     }
 }
