@@ -195,7 +195,14 @@ impl RepoState {
 
         let metadata = if let Some(ref conf) = config.metadata_config {
             buf.clear();
-            read_metadata(urso, &conf.spec, &conf.filename, &mut buf)
+            read_metadata(
+                urso,
+                conf.spec.as_deref().unwrap_or("HEAD"),
+                conf.filename
+                    .as_deref()
+                    .unwrap_or(std::path::Path::new(".config/caca.ini")),
+                &mut buf,
+            )
         } else {
             Metadata::default()
         };

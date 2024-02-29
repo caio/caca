@@ -109,16 +109,16 @@ impl GlobalConfig {
 
 #[derive(Debug, Clone)]
 pub(crate) struct MetadataConfig {
-    pub spec: String,
-    pub filename: PathBuf,
+    pub spec: Option<String>,
+    pub filename: Option<PathBuf>,
 }
 
 impl Default for MetadataConfig {
     fn default() -> Self {
         Self {
-            spec: "HEAD".to_string(),
+            spec: Some("HEAD".to_string()),
             // gitconfig is not quite .ini eh
-            filename: PathBuf::from(".config/caca.ini"),
+            filename: Some(PathBuf::from(".config/caca.ini")),
         }
     }
 }
