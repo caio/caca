@@ -47,7 +47,7 @@ impl Default for GlobalConfig {
             log_size: NonZeroUsize::new(30).unwrap(),
             allow_http_clone: true,
             cache_size: NonZeroUsize::new(1000).unwrap(),
-            theme: Theme::Static,
+            theme: Theme::AutoReload(String::from("caca/theme")),
             num_threads: None,
             export_all: true, // false => require git-daemon-export-ok
             listen_mode: ListenMode::addr("[::]:42080").expect("valid default socket addr"),
@@ -81,6 +81,7 @@ impl GlobalConfig {
             },
             global_mailmap: Some("/etc/caca/mailmap".into()),
             listen_mode: ListenMode::External,
+            theme: Theme::Static,
             ..Default::default()
         };
         config.check().expect("valid live config")
@@ -148,7 +149,7 @@ impl GlobalConfig {
         self.site.base_url.clone()
     }
 
-    fn from_bytes(data: &[u8]) -> crate::Result<Self> {
+    pub fn from_bytes(data: &[u8]) -> crate::Result<Self> {
         let mut config = Self::default();
         let mut first_err: Option<Box<dyn std::error::Error>> = None;
         urso::config::parse(data, |section, _subsection, key, value| -> bool {
@@ -180,6 +181,14 @@ impl GlobalConfig {
                 }
                 "core" => {
                     match key {
+                        "static-theme" => match from_utf8(value) {
+                            Ok(true) => config.theme = Theme::Static,
+                            Ok(false) => {} // autoreload
+                            Err(err) => {
+                                first_err = Some(err);
+                                return false;
+                            }
+                        },
                         "theme" => {
                             config.theme =
                                 Theme::AutoReload(String::from_utf8_lossy(value).into_owned());
@@ -450,6 +459,7 @@ reverse-proxy-base = /de
 [core]
 listen = external
 global-mailmap = /etc/caca/mailmap
+static-theme = true
         ";
 
         assert_eq!(
