@@ -8,11 +8,9 @@ use minijinja::Environment;
 
 use crate::repo::{Blob, Commit, GlobalFeed, Listing, Log, Refs, RepoFeed, Summary, Tree};
 
-#[derive(Debug, Clone)]
-#[allow(dead_code)]
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) enum Theme {
     Static,
-    Dir(String),
     AutoReload(String),
 }
 
@@ -20,9 +18,7 @@ impl Theme {
     pub(crate) fn dir(&self) -> std::io::Result<Option<std::path::PathBuf>> {
         match self {
             Theme::Static => Ok(None),
-            Theme::Dir(n) | Theme::AutoReload(n) => {
-                Some(Path::new(n).to_path_buf().canonicalize()).transpose()
-            }
+            Theme::AutoReload(n) => Some(Path::new(n).to_path_buf().canonicalize()).transpose(),
         }
     }
 
@@ -33,7 +29,7 @@ impl Theme {
     pub(crate) fn env(&self) -> Result<minijinja::Environment<'static>, minijinja::Error> {
         match self {
             Theme::Static => static_env(),
-            Theme::Dir(n) | Theme::AutoReload(n) => dir_env(n),
+            Theme::AutoReload(n) => dir_env(n),
         }
     }
 }
