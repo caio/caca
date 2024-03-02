@@ -46,7 +46,7 @@ impl Metadata {
 pub(crate) fn read_metadata(
     urso: &urso::Urso,
     rev: &str,
-    path: &std::path::Path,
+    path: &str,
     buf: &mut Vec<u8>,
 ) -> Metadata {
     let head = match urso.rev_parse(rev) {

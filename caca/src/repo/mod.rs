@@ -193,14 +193,12 @@ impl RepoState {
             .clone();
         let head_id = head.commit.id.id;
 
-        let metadata = if let Some(ref conf) = config.metadata_config {
+        let metadata = if config.metadata_config.enabled {
             buf.clear();
             read_metadata(
                 urso,
-                conf.spec.as_deref().unwrap_or("HEAD"),
-                conf.filename
-                    .as_deref()
-                    .unwrap_or(std::path::Path::new(".config/caca.ini")),
+                config.metadata_config.spec(),
+                config.metadata_config.filename(),
                 &mut buf,
             )
         } else {

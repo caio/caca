@@ -131,7 +131,7 @@ fn main() -> Result<()> {
             max_file_size_bytes: 2 * 1024 * 1024,
             rename_similarity_threshold: Some(0.7),
             repo_object_cache_size: 20 * 1024 * 1024,
-            metadata_config: Some(config::MetadataConfig::default()),
+            metadata_config: config::MetadataConfig::default(),
             global_mailmap: None,
             feed_size: NonZeroUsize::new(40),
             log_size: NonZeroUsize::new(30).unwrap(),

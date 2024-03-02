@@ -15,8 +15,7 @@ pub(crate) struct GlobalConfig {
     pub max_file_size_bytes: u64,
     pub repo_object_cache_size: usize,
     pub rename_similarity_threshold: Option<f32>,
-    pub metadata_config: Option<MetadataConfig>,
-    // TODO merge mailmap_config / global_mailmap
+    pub metadata_config: MetadataConfig,
     pub global_mailmap: Option<PathBuf>,
     pub feed_size: Option<NonZeroUsize>,
     pub log_size: NonZeroUsize,
@@ -110,20 +109,31 @@ impl GlobalConfig {
 #[derive(Debug, Clone)]
 pub(crate) struct MetadataConfig {
     pub spec: Option<String>,
-    pub filename: Option<PathBuf>,
+    pub filename: Option<String>,
+    pub enabled: bool,
 }
 
 impl Default for MetadataConfig {
     fn default() -> Self {
         Self {
-            spec: Some("HEAD".to_string()),
-            // gitconfig is not quite .ini eh
-            filename: Some(PathBuf::from(".config/caca.ini")),
+            spec: None,
+            filename: None,
+            enabled: true,
         }
     }
 }
 
-#[derive(Debug, Clone)]
+impl MetadataConfig {
+    pub(crate) fn spec(&self) -> &str {
+        self.spec.as_deref().unwrap_or("HEAD")
+    }
+
+    pub(crate) fn filename(&self) -> &str {
+        self.filename.as_deref().unwrap_or(".config/caca.ini")
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) enum ListenMode {
     External,
     Bind(BindOptions),
