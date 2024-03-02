@@ -73,7 +73,6 @@
 )]
 
 use std::{
-    num::NonZeroUsize,
     path::{Path, PathBuf},
     sync::Arc,
 };
@@ -103,7 +102,7 @@ mod metadata;
 mod repo;
 mod view;
 
-use crate::{client::Client, config::GlobalConfig, repo::RepoState, view::Theme};
+use crate::{client::Client, config::GlobalConfig, repo::RepoState};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>; // yolo
 
@@ -117,36 +116,10 @@ fn main() -> Result<()> {
         )
         .init();
 
-    let config = Arc::new(
-        GlobalConfig {
-            site: config::Site {
-                listing_title: String::from("caio's code asylum"),
-                listing_html_header: String::from("<h1>caca</h1>"),
-                base_url: String::from("http://localhost:42080"),
-                clone_base_url: None,
-                // to allow mounting caca as a subdirectory
-                // when set, a repo url is base_url + reverse_proxy_base + / + name
-                reverse_proxy_base: None,
-            },
-            max_file_size_bytes: 2 * 1024 * 1024,
-            rename_similarity_threshold: Some(0.7),
-            repo_object_cache_size: 20 * 1024 * 1024,
-            metadata_config: config::MetadataConfig::default(),
-            global_mailmap: None,
-            feed_size: NonZeroUsize::new(40),
-            log_size: NonZeroUsize::new(30).unwrap(),
-            allow_http_clone: true,
-            cache_size: NonZeroUsize::new(1000).unwrap(),
-            // theme: Theme::Static,
-            theme: Theme::AutoReload("caca/theme".to_string()),
-            num_threads: None,
-            export_all: true, // false => require git-daemon-export-ok
-            listen_mode: config::ListenMode::addr("[::]:42080")?,
-            // listen_mode: config::ListenMode::with_admin("[::]:42080", "[::1]:42081")?,
-            // listen_mode: config::ListenMode::external(),
-        }
-        .check()?,
-    );
+    let (config, gitroot) = parse_args()?;
+    let config = Arc::new(config);
+
+    let basedir = PathBuf::from(gitroot).canonicalize()?;
 
     // May fiddle with env. keep it early at boot
     let (app_listener, admin_listener) = config.listen_mode.to_non_blocking_sockets()?;
@@ -161,9 +134,6 @@ fn main() -> Result<()> {
             .num_threads(num_threads)
             .build()?,
     );
-
-    let basedir =
-        PathBuf::from(std::env::args().nth(1).expect("path as first arg")).canonicalize()?;
 
     let repos = open_repos(basedir.clone(), &pool, Arc::clone(&config))?;
     if repos.is_empty() {
@@ -367,4 +337,55 @@ fn open_repos(
 
 async fn handler(State(client): State<Client>, uri: Uri) -> Response {
     client.handle(uri).await
+}
+
+fn parse_args() -> Result<(GlobalConfig, String)> {
+    let mut args = std::env::args().collect::<std::collections::VecDeque<_>>();
+
+    let Some(prog) = args.pop_front() else {
+        return Err("missing argv0".into());
+    };
+
+    macro_rules! usage {
+        () => {
+            format!("usage: {prog} [-c /path/to/config] /path/to/gitroot")
+        };
+    }
+
+    if args
+        .iter()
+        .next()
+        .map_or(true, |a| matches!(a.as_str(), "-h" | "--help"))
+    {
+        return Err(usage!().into());
+    }
+
+    let arg = args.pop_front().expect("checked above: has at least one");
+
+    match arg.as_str() {
+        "-c" | "--config" => {
+            let Some(path) = args.pop_front() else {
+                return Err(usage!().into());
+            };
+            let data = std::fs::read(path)?;
+            let config = GlobalConfig::from_bytes(&data)?;
+
+            let Some(gitroot) = args.pop_front() else {
+                tracing::error!("missing gitroot");
+                return Err(usage!().into());
+            };
+
+            Ok((config, gitroot))
+        }
+        "--me" => {
+            let Some(gitroot) = args.pop_front() else {
+                tracing::error!("missing gitroot");
+                return Err(usage!().into());
+            };
+
+            Ok((GlobalConfig::caiodotco(), gitroot))
+        }
+        _ if args.is_empty() => Ok((GlobalConfig::default(), arg)),
+        _ => Err(usage!().into()),
+    }
 }

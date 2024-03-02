@@ -15,10 +15,11 @@ and, well, here we are...
 
 # usage
 
-Configure it by changing the `GlobalConfig` instance within
-[caca/src/main.rs](caca/src/main.rs#L120) then:
+    caca [-c /path/to/config] /path/to/gitroot
 
-    cargo run -- path/to/gitroot
+The (optional) configuration maps a gitconfig/ini file to [a GlobalConfig
+instance](caca/src/config.rs#L13). See [here](caca/src/config.rs#L448) how
+one could look like
 
 You can use the `RUST_LOG` environment variable to configure logging.
 The cmdline I tend to use when hacking is something like:

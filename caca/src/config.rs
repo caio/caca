@@ -355,10 +355,6 @@ impl ListenMode {
 }
 
 impl ListenMode {
-    pub fn external() -> Self {
-        Self::External
-    }
-
     pub fn addr(addr: &str) -> std::result::Result<Self, AddrParseError> {
         let addr = addr.parse()?;
         Ok(Self::Bind(BindOptions {
