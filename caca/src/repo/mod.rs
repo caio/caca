@@ -1447,6 +1447,7 @@ impl Repos {
     pub fn update(&mut self, state: Arc<RepoState>) -> bool {
         if let Some(found) = self.inner.iter_mut().find(|r| r.name == state.name) {
             found.state = state;
+            self.build_global_feed();
             true
         } else {
             false
