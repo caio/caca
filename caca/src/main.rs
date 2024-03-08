@@ -119,6 +119,8 @@ fn main() -> Result<()> {
     let (config, gitroot) = parse_args()?;
     let config = Arc::new(config);
 
+    tracing::debug!(config = tracing::field::debug(&config), "loaded config");
+
     let basedir = PathBuf::from(gitroot).canonicalize()?;
 
     // May fiddle with env. keep it early at boot
