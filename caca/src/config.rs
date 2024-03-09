@@ -37,6 +37,7 @@ impl Default for GlobalConfig {
                 base_url: String::from("http://localhost:42080"),
                 clone_base_url: None,
                 reverse_proxy_base: None,
+                repo_to_listing_name: None,
             },
             max_file_size_bytes: 2 * 1024 * 1024,
             rename_similarity_threshold: Some(0.7),
@@ -63,6 +64,9 @@ pub(crate) struct Site {
     pub base_url: String,
     // for mounting it as a subfolder when reverse proxying
     pub reverse_proxy_base: Option<String>,
+    // fscking terrible name, but when set, a link to the index
+    // will appear before the repo name in every repo page header
+    pub repo_to_listing_name: Option<String>,
 
     // override the url displayed for clone
     // gets the repo name appended
@@ -78,6 +82,7 @@ impl GlobalConfig {
                 base_url: "https://caio.co".to_string(),
                 reverse_proxy_base: Some("/de".to_string()),
                 clone_base_url: None,
+                repo_to_listing_name: Some("caio.co/de".to_string()),
             },
             global_mailmap: Some("/etc/caca/mailmap".into()),
             listen_mode: ListenMode::External,
@@ -132,6 +137,13 @@ impl GlobalConfig {
         )
     }
 
+    pub fn listing_url(&self) -> String {
+        format!(
+            "{}/",
+            self.site.reverse_proxy_base.as_deref().unwrap_or_default()
+        )
+    }
+
     pub fn repo_clone_url(&self, name: &str) -> String {
         if let Some(ref url) = self.site.clone_base_url {
             format!("{url}/{name}",)
@@ -172,6 +184,10 @@ impl GlobalConfig {
                         }
                         "reverse-proxy-base" => {
                             config.site.reverse_proxy_base =
+                                Some(String::from_utf8_lossy(value).into_owned());
+                        }
+                        "repo-to-listing-name" => {
+                            config.site.repo_to_listing_name =
                                 Some(String::from_utf8_lossy(value).into_owned());
                         }
                         _ => {
@@ -451,6 +467,7 @@ listing-title = caio.co/de index
 listing-html-header = <h1>caio.<strong>co/de</strong></h1>
 base-url = https://caio.co
 reverse-proxy-base = /de
+repo-to-listing-name = caio.co/de
 
 [core]
 listen = external

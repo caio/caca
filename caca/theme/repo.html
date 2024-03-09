@@ -3,7 +3,9 @@
 {% block title %}{{ repo.name }}{% if repo.description %} - {{ repo.description }}{% endif %} {% endblock title %}
 
 {% block header %}
-<h3><a class="nodec" href="{{ repo.url }}">{{ repo.name }}</a></h3>
+<h3>{% if repo.listing_name %}<a class="nodec" href="{{ repo.listing_url }}">{{ repo.listing_name }}</a>/{% endif %}<a
+    class="nodec" href="{{ repo.url }}">{{
+    repo.name }}</a></h3>
 {% if nav %}
 <nav>
   <ol>

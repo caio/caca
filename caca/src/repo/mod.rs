@@ -33,6 +33,8 @@ pub(crate) struct RepoState {
     pub name: String,
     pub clone_url: String,
     pub repo_url: String,
+    pub listing_url: String,
+    pub listing_name: Option<String>,
     pub feed_base_url: String,
     pub reverse_proxy_base: String,
     pub snapshot: Snapshot,
@@ -232,6 +234,8 @@ impl RepoState {
 
         let clone_url = config.repo_clone_url(&name);
         let repo_url = config.repo_url(&name);
+        let listing_url = config.listing_url();
+        let listing_name = config.site.repo_to_listing_name.clone();
 
         let reverse_proxy_base = config
             .site
@@ -244,6 +248,8 @@ impl RepoState {
             name,
             repo_url,
             clone_url,
+            listing_url,
+            listing_name,
             feed_base_url: config.feed_base_url(),
             snapshot,
             mailmap,
@@ -764,6 +770,8 @@ impl RepoState {
             name: &self.name,
             url: &self.repo_url,
             clone_url: &self.clone_url,
+            listing_url: &self.listing_url,
+            listing_name: self.listing_name.as_deref(),
             description: self.snapshot.metadata.description.as_deref(),
         }
     }
@@ -1231,6 +1239,8 @@ pub(crate) struct Info<'a> {
     description: Option<&'a str>,
     url: &'a str,
     clone_url: &'a str,
+    listing_url: &'a str,
+    listing_name: Option<&'a str>,
 }
 
 #[derive(Debug, serde::Serialize)]
