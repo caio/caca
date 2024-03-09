@@ -1,13 +1,10 @@
-use std::net::SocketAddr;
-
-use std::net::AddrParseError;
-use std::net::TcpListener;
+use std::{
+    net::{AddrParseError, SocketAddr, TcpListener},
+    num::NonZeroUsize,
+    path::PathBuf,
+};
 
 use crate::view::Theme;
-
-use std::num::NonZeroUsize;
-
-use std::path::PathBuf;
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct GlobalConfig {
