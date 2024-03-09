@@ -6,8 +6,8 @@
   <subtitle>{{ repo.description }}</subtitle>
   {% endif %}
   <updated>{{ updated }}</updated>
-  <link href="{{ baseurl|safe }}" />
-  <id>{{ baseurl|safe }}</id>
+  <link href="{{ baseurl|safe }}/{{ repo.name }}" />
+  <id>{{ baseurl|safe }}/{{ repo.name }}</id>
 
   {% for e in entries %}
   {{ feed_entry(e) }}
