@@ -47,7 +47,7 @@ impl Default for GlobalConfig {
             feed_size: NonZeroUsize::new(40),
             log_size: NonZeroUsize::new(30).unwrap(),
             allow_http_clone: true,
-            cache_size: NonZeroUsize::new(1000).unwrap(),
+            cache_size: NonZeroUsize::new(15000).unwrap(),
             theme: Theme::AutoReload(String::from("caca/theme")),
             num_threads: None,
             export_all: true, // false => require git-daemon-export-ok
