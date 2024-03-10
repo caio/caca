@@ -75,7 +75,9 @@ impl GlobalConfig {
         let config = Self {
             site: Site {
                 listing_title: "caio.co/de index".to_string(),
-                listing_html_header: "<h1>caio.<strong>co/de</strong></h1>".to_string(),
+                listing_html_header:
+                    r#"<h1><a class="nodec" href="..">caio.</a><strong>co/de</strong></h1>"#
+                        .to_string(),
                 base_url: "https://caio.co".to_string(),
                 reverse_proxy_base: Some("/de".to_string()),
                 clone_base_url: None,
@@ -458,10 +460,10 @@ anotherjunk=12
 
     #[test]
     fn parse_caiodotco() {
-        let live_config = "
+        let live_config = r#"
 [site]
 listing-title = caio.co/de index
-listing-html-header = <h1>caio.<strong>co/de</strong></h1>
+listing-html-header = <h1><a class="nodec" href="..">caio.</a><strong>co/de</strong></h1>
 base-url = https://caio.co
 reverse-proxy-base = /de
 repo-to-listing-name = caio.co/de
@@ -470,7 +472,7 @@ repo-to-listing-name = caio.co/de
 listen = external
 global-mailmap = /etc/caca/mailmap
 static-theme = true
-        ";
+        "#;
 
         assert_eq!(
             GlobalConfig::caiodotco(),
