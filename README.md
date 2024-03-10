@@ -18,8 +18,9 @@ and, well, here we are...
     caca [-c /path/to/config] /path/to/gitroot
 
 The (optional) configuration maps a gitconfig/ini file to [a GlobalConfig
-instance](caca/src/config.rs#L13). See [here](caca/src/config.rs#L448) how
-one could look like
+instance](caca/src/config.rs#L13).
+See [caio.co/de's live config](resources/caiodotco-live-config.ini) as an
+example.
 
 You can use the `RUST_LOG` environment variable to configure logging.
 The cmdline I tend to use when hacking is something like:

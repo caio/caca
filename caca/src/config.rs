@@ -460,19 +460,7 @@ anotherjunk=12
 
     #[test]
     fn parse_caiodotco() {
-        let live_config = r#"
-[site]
-listing-title = caio.co/de index
-listing-html-header = <h1><a class="nodec" href="..">caio.</a><strong>co/de</strong></h1>
-base-url = https://caio.co
-reverse-proxy-base = /de
-repo-to-listing-name = caio.co/de
-
-[core]
-listen = external
-global-mailmap = /etc/caca/mailmap
-static-theme = true
-        "#;
+        let live_config = include_str!("../../resources/caiodotco-live-config.ini");
 
         assert_eq!(
             GlobalConfig::caiodotco(),
