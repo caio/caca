@@ -755,14 +755,20 @@ impl RepoState {
     }
 
     pub fn idle(&self) -> DateTime {
-        let head = self.snapshot.head.commit.author.time;
+        // XXX relying on sorted state
+        let tip = self
+            .snapshot
+            .branches
+            .first()
+            .map(|b| b.commit.author.time)
+            .unwrap_or_default();
         if let Some(tag) = self.snapshot.tags.first() {
             let tagged_at = tag.time();
-            if tagged_at > head {
+            if tagged_at > tip {
                 return tagged_at;
             }
         }
-        head
+        tip
     }
 
     fn repo_info(&self) -> Info<'_> {
