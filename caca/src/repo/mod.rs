@@ -324,7 +324,7 @@ impl RepoState {
             // when at capacity, can't add anything if `rev`s tip
             // is older than the oldest entry in the feed
             if feed.len() == limit
-                && feed.min().expect("feed is at capacity").time() < rev.commit.author.time
+                && feed.last().expect("feed is at capacity").time() >= rev.commit.author.time
             {
                 return Ok(false);
             }

@@ -131,7 +131,7 @@ impl<T: Ord> TopK<T> {
         Self { q, k }
     }
 
-    pub(crate) fn min(&self) -> Option<&T> {
+    pub(crate) fn last(&self) -> Option<&T> {
         self.q.peek().map(|Reverse(i)| i)
     }
 
