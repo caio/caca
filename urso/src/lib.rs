@@ -92,7 +92,7 @@ pub use gix::{
 
 use std::{
     borrow::Cow,
-    collections::{HashSet, VecDeque},
+    collections::{BinaryHeap, HashSet},
     path::{Path, PathBuf},
 };
 
@@ -691,13 +691,26 @@ impl Urso {
         F: PathCommitVisitor,
     {
         let mut path = path.as_ref().to_path_buf();
+
         let mut queue = OnceQueue::new();
-        queue.insert(head);
+
+        {
+            let commit = self.find_commit(head)?;
+            let time = commit.time().expect("handle error");
+            queue.insert(ByCommitTime {
+                time,
+                id: commit.id,
+            });
+        }
 
         let mut parent_ids = Vec::new();
         let mut buf = Vec::new();
 
-        while let Some(commit_id) = queue.remove() {
+        while let Some(info) = queue.remove() {
+            let ByCommitTime {
+                time: _,
+                id: commit_id,
+            } = info;
             let commit = self.find_commit(commit_id)?;
 
             let commit_tree = self.get_commit_tree(commit_id)?;
@@ -726,7 +739,14 @@ impl Urso {
                 }
                 // single parent, follow it
                 1 => {
-                    queue.insert(parent_ids[0]);
+                    {
+                        let commit = self.find_commit(parent_ids[0])?;
+                        let time = commit.time().expect("handle error");
+                        queue.insert(ByCommitTime {
+                            time,
+                            id: commit.id,
+                        });
+                    }
                     parent_ids[0]
                 }
                 _merge_commit => {
@@ -756,11 +776,25 @@ impl Urso {
 
                     if let Some(idx) = first_treesame_idx {
                         let parent_id = parent_ids[idx];
-                        queue.insert(parent_id);
+                        {
+                            let commit = self.find_commit(parent_id)?;
+                            let time = commit.time().expect("handle error");
+                            queue.insert(ByCommitTime {
+                                time,
+                                id: commit.id,
+                            });
+                        }
                         parent_id
                     } else {
                         for &id in parent_ids.iter() {
-                            queue.insert(id);
+                            {
+                                let commit = self.find_commit(id)?;
+                                let time = commit.time().expect("handle error");
+                                queue.insert(ByCommitTime {
+                                    time,
+                                    id: commit.id,
+                                });
+                            }
                         }
                         parent_ids[0]
                     }
@@ -899,30 +933,58 @@ impl rename::Repo for &Urso {
     }
 }
 
-struct OnceQueue<T> {
-    other: VecDeque<T>,
-    seen: HashSet<T>,
+#[derive(Debug)]
+struct ByCommitTime {
+    time: Time,
+    id: ObjectId,
 }
 
-impl<T: std::hash::Hash + Eq + Copy> OnceQueue<T> {
+impl PartialEq for ByCommitTime {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+
+impl Eq for ByCommitTime {}
+
+impl PartialOrd for ByCommitTime {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for ByCommitTime {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.time
+            .cmp(&other.time)
+            .then_with(|| self.id.cmp(&other.id))
+    }
+}
+
+struct OnceQueue {
+    items: BinaryHeap<ByCommitTime>,
+    seen: HashSet<ObjectId>,
+}
+
+impl OnceQueue {
     pub(crate) fn new() -> Self {
         Self {
-            other: Default::default(),
+            items: Default::default(),
             seen: Default::default(),
         }
     }
 
-    pub(crate) fn insert(&mut self, info: T) -> bool {
-        if self.seen.insert(info) {
-            self.other.push_back(info);
+    pub(crate) fn insert(&mut self, info: ByCommitTime) -> bool {
+        if self.seen.insert(info.id) {
+            self.items.push(info);
             true
         } else {
             false
         }
     }
 
-    pub(crate) fn remove(&mut self) -> Option<T> {
-        self.other.pop_front()
+    pub(crate) fn remove(&mut self) -> Option<ByCommitTime> {
+        self.items.pop()
     }
 }
 
