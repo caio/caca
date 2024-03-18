@@ -694,14 +694,18 @@ impl Urso {
 
         let mut queue = OnceQueue::new();
 
-        {
-            let commit = self.find_commit(head)?;
-            let time = commit.time().expect("handle error");
-            queue.insert(ByCommitTime {
-                time,
-                id: commit.id,
-            });
+        macro_rules! enqueue {
+            ($id:expr) => {
+                let commit = self.find_commit($id)?;
+                let time = commit.time().map_err(|_| Error::Decode($id))?;
+                queue.insert(ByCommitTime {
+                    time,
+                    id: commit.id,
+                });
+            };
         }
+
+        enqueue!(head);
 
         let mut parent_ids = Vec::new();
         let mut buf = Vec::new();
@@ -739,14 +743,7 @@ impl Urso {
                 }
                 // single parent, follow it
                 1 => {
-                    {
-                        let commit = self.find_commit(parent_ids[0])?;
-                        let time = commit.time().expect("handle error");
-                        queue.insert(ByCommitTime {
-                            time,
-                            id: commit.id,
-                        });
-                    }
+                    enqueue!(parent_ids[0]);
                     parent_ids[0]
                 }
                 _merge_commit => {
@@ -776,25 +773,11 @@ impl Urso {
 
                     if let Some(idx) = first_treesame_idx {
                         let parent_id = parent_ids[idx];
-                        {
-                            let commit = self.find_commit(parent_id)?;
-                            let time = commit.time().expect("handle error");
-                            queue.insert(ByCommitTime {
-                                time,
-                                id: commit.id,
-                            });
-                        }
+                        enqueue!(parent_id);
                         parent_id
                     } else {
                         for &id in parent_ids.iter() {
-                            {
-                                let commit = self.find_commit(id)?;
-                                let time = commit.time().expect("handle error");
-                                queue.insert(ByCommitTime {
-                                    time,
-                                    id: commit.id,
-                                });
-                            }
+                            enqueue!(id);
                         }
                         parent_ids[0]
                     }
