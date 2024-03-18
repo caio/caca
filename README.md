@@ -18,7 +18,7 @@ and, well, here we are...
     caca [-c /path/to/config] /path/to/gitroot
 
 The (optional) configuration maps a gitconfig/ini file to [a GlobalConfig
-instance](caca/src/config.rs#L13).
+instance](caca/src/config.rs#L10).
 See [caio.co/de's live config](resources/caiodotco-live-config.ini) as an
 example.
 
