@@ -6,7 +6,7 @@ pub(crate) fn diff(before: &str, after: &str) -> super::UnifiedDiff {
     let input = InternedInput::new(before, after);
     let sink = StructuredSink::new(&input);
 
-    imara_diff(Algorithm::Myers, &input, sink)
+    imara_diff(Algorithm::Histogram, &input, sink)
 }
 
 pub(crate) fn similarity(before: &str, after: &str) -> f32 {
