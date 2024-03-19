@@ -316,8 +316,6 @@ fn split_frontmatter(data: &[u8]) -> (Option<Payload<'_>>, &[u8]) {
 pub(crate) fn render_markdown(data: &[u8]) -> String {
     let mut opts = markdown::Options::gfm();
     opts.compile.allow_dangerous_html = true;
-    // XXX can i make use of frontmatter smh
-    // opts.parse.constructs.frontmatter = true;
     markdown::to_html_with_options(
         // FIXME assuming markdown files are always utf8 encoded
         &String::from_utf8_lossy(data),
