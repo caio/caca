@@ -96,7 +96,7 @@ where
 impl<T: PartialEq> From<Vec<Hunk<T>>> for Lines<T> {
     fn from(inner: Vec<Hunk<T>>) -> Self {
         assert!(!inner.is_empty());
-        for h in inner.iter() {
+        for h in &inner {
             assert_ne!(0, h.len);
         }
         Self(inner)
@@ -121,7 +121,7 @@ where
 {
     let mut tally = 0;
     let mut i = 0;
-    for hunk in state.iter() {
+    for hunk in state {
         if tally == lineno {
             return Pos::Left(i);
         }

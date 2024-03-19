@@ -366,7 +366,7 @@ impl RepoState {
         // now walk through the branches, using the tip as a
         // guide to know wether there's any chance it contains
         // recent commits
-        for rev in self.snapshot.branches.iter() {
+        for rev in &self.snapshot.branches {
             if rev.name == self.snapshot.head.name {
                 continue;
             }
@@ -1427,7 +1427,7 @@ impl Repos {
             title: &self.title,
             header_html: &self.header_html,
         };
-        for r in self.inner.iter() {
+        for r in &self.inner {
             match r.snapshot.metadata.state {
                 State::Archived => listing.num_archived += 1,
                 State::Default => {}
@@ -1475,8 +1475,8 @@ impl Repos {
             return;
         };
         let mut topk = TopK::new(k);
-        for repo in self.inner.iter() {
-            for entry in repo.feed.iter() {
+        for repo in &self.inner {
+            for entry in &repo.feed {
                 if !topk.insert(GlobalFeedEntry {
                     repo: repo.name.clone(),
                     entry: entry.clone(),

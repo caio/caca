@@ -201,7 +201,7 @@ where
         let mut op = None;
         let mut at = (chunk.before_pos.start as isize + offset) as u32;
         assert!(chunk.before_pos.start as isize + offset >= 0);
-        for line in chunk.lines.iter() {
+        for line in &chunk.lines {
             match line {
                 Line::Addition(_) => {
                     offset += 1;

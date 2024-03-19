@@ -11,9 +11,10 @@
     clippy::empty_enum,
     clippy::enum_glob_use,
     clippy::exit,
-    clippy::expl_impl_clone_on_copy,
     clippy::explicit_deref_methods,
     clippy::explicit_into_iter_loop,
+    clippy::explicit_iter_loop,
+    clippy::expl_impl_clone_on_copy,
     clippy::fallible_impl_from,
     clippy::filter_map_next,
     clippy::flat_map_option,
@@ -38,13 +39,13 @@
     clippy::map_unwrap_or,
     clippy::match_on_vec_items,
     clippy::match_same_arms,
-    clippy::match_wild_err_arm,
     clippy::match_wildcard_for_single_variants,
+    clippy::match_wild_err_arm,
     clippy::mem_forget,
     clippy::mismatched_target_os,
     clippy::missing_enforced_import_renames,
-    clippy::mut_mut,
     clippy::mutex_integer,
+    clippy::mut_mut,
     clippy::needless_borrow,
     clippy::needless_continue,
     clippy::needless_for_each,
@@ -57,8 +58,8 @@
     clippy::same_functions_in_if_condition,
     clippy::semicolon_if_nothing_returned,
     clippy::single_match_else,
-    clippy::string_add_assign,
     clippy::string_add,
+    clippy::string_add_assign,
     clippy::string_lit_as_bytes,
     clippy::string_to_string,
     clippy::todo,
@@ -776,7 +777,7 @@ impl Urso {
                         enqueue!(parent_id);
                         parent_id
                     } else {
-                        for &id in parent_ids.iter() {
+                        for &id in &parent_ids {
                             enqueue!(id);
                         }
                         parent_ids[0]

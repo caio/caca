@@ -88,7 +88,7 @@ impl<'a> StructuredSink<'a> {
         self.before_hunk_len += range.end - range.start;
         let range = range.start as usize..range.end as usize;
 
-        for &line in self.input.before[range].iter() {
+        for &line in &self.input.before[range] {
             self.lines.push(super::Line::Removal(String::from(
                 self.input.interner[line],
             )));
@@ -97,7 +97,7 @@ impl<'a> StructuredSink<'a> {
 
     fn register_additions(&mut self, range: Range<u32>) {
         self.after_hunk_len += range.end - range.start;
-        for &line in self.input.after[(range.start as usize)..(range.end as usize)].iter() {
+        for &line in &self.input.after[(range.start as usize)..(range.end as usize)] {
             self.lines.push(super::Line::Addition(String::from(
                 self.input.interner[line],
             )));
@@ -105,7 +105,7 @@ impl<'a> StructuredSink<'a> {
     }
 
     fn register_context(&mut self, range: Range<u32>) {
-        for &line in self.input.before[(range.start as usize)..(range.end as usize)].iter() {
+        for &line in &self.input.before[(range.start as usize)..(range.end as usize)] {
             self.lines.push(super::Line::Context(String::from(
                 self.input.interner[line],
             )));

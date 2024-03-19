@@ -172,7 +172,7 @@ pub struct UnifiedDiff {
 
 impl std::fmt::Debug for UnifiedDiff {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for c in self.chunks.iter() {
+        for c in &self.chunks {
             c.format_patch(f)?;
         }
         Ok(())
@@ -186,7 +186,7 @@ impl UnifiedDiff {
 
     pub fn as_patch(&self) -> std::result::Result<String, std::fmt::Error> {
         let mut patch = String::new();
-        for chunk in self.chunks.iter() {
+        for chunk in &self.chunks {
             chunk.format_patch(&mut patch)?;
         }
         Ok(patch)
@@ -210,7 +210,7 @@ impl Chunk {
             self.after_pos.start + 1,
             self.after_pos.len(),
         )?;
-        for line in self.lines.iter() {
+        for line in &self.lines {
             match line {
                 Line::Addition(s) => writeln!(f, "+{}", s)?,
                 Line::Removal(s) => writeln!(f, "-{}", s)?,
