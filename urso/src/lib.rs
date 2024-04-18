@@ -78,7 +78,7 @@
 use error::wrap_err;
 use gix::{
     bstr::BStr, object::tree, objs::tree::EntryKind, odb::HeaderExt, prelude::FindExt,
-    traverse::commit::Sorting, Object, Repository, Tree,
+    traverse::commit::simple::Sorting, Object, Repository, Tree,
 };
 
 // re-export
