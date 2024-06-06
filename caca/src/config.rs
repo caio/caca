@@ -145,7 +145,7 @@ impl GlobalConfig {
 
     pub fn repo_clone_url(&self, name: &str) -> String {
         if let Some(ref url) = self.site.clone_base_url {
-            format!("{url}/{name}",)
+            format!("{url}/{name}")
         } else {
             format!(
                 "{}{}/{name}",

@@ -1111,16 +1111,6 @@ pub mod config {
     pub use gix::config::parse::Error;
     use gix::config::parse::{from_bytes, Event};
 
-    trait EntryVisitor {
-        fn visit(
-            &mut self,
-            section: &str,
-            subsection: Option<&str>,
-            key: &str,
-            value: &[u8],
-        ) -> bool;
-    }
-
     pub fn parse<V>(data: &[u8], mut visitor: V) -> Result<(), Error>
     where
         // F(section, subsection, key, value) -> continue_parsing
