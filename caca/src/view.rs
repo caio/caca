@@ -90,63 +90,63 @@ impl View {
     pub(crate) fn tree(data: Tree<'_>) -> Self {
         Self {
             kind: Kind::Tree,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn commit(data: Commit<'_>) -> Self {
         Self {
             kind: Kind::Commit,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn blob(data: Blob<'_>) -> Self {
         Self {
             kind: Kind::Blob,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn summary(data: Summary<'_>) -> Self {
         Self {
             kind: Kind::Summary,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn index(data: Listing<'_>) -> Self {
         Self {
             kind: Kind::Index,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn feed(data: RepoFeed<'_>) -> Self {
         Self {
             kind: Kind::Feed,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn global_feed(data: GlobalFeed<'_>) -> Self {
         Self {
             kind: Kind::GlobalFeed,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn refs(data: Refs<'_>) -> Self {
         Self {
             kind: Kind::Refs,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 
     pub(crate) fn log(data: Log<'_>) -> Self {
         Self {
             kind: Kind::Log,
-            data: minijinja::Value::from_serializable(&data),
+            data: minijinja::Value::from_serialize(data),
         }
     }
 }
