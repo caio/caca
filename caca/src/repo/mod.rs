@@ -546,6 +546,8 @@ impl RepoState {
         let (kind, content) = get_content(urso, &ctx, &path)?;
         let raw_url = self.raw_url(&ctx, &path);
 
+        // FIXME minijinja range takes u32 but panics on runtime
+        //       if >10000 🤡
         let mut num_lines = 0;
         if let Some(ref data) = content {
             num_lines = data.matches('\n').count();
